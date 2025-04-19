@@ -1,0 +1,34 @@
+<input type="hidden" id="userEmail" value="{{ email }}">
+<div>
+    <h3>Enter the OTP sent to your email</h3>
+    <input type="text" id="otpInput" placeholder="Enter OTP">
+    <button id="submitOtpBtn">Submit OTP</button>
+    <button id="resendOtpBtn">Resend OTP</button>
+    <p id="otpError" style="color:red;"></p>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$("#submitOtpBtn").click(function() {
+    $.post("/verify-otp/", {
+        otp: $("#otpInput").val(),
+        email: $("#userEmail").val(),
+        csrfmiddlewaretoken: '{{ csrf_token }}'
+    }, function(data) {
+        if (data.success) {
+            window.location.href = "/home/";
+        } else {
+            $("#otpError").text(data.message);
+        }
+    });
+});
+
+$("#resendOtpBtn").click(function() {
+    $.post("/resend-otp/", {
+        email: $("#userEmail").val(),
+        csrfmiddlewaretoken: '{{ csrf_token }}'
+    }, function() {
+        alert("OTP resent!");
+    });
+});
+</script>
